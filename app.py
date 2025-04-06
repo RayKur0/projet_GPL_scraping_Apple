@@ -13,7 +13,7 @@ server = app.server  # utile pour le déploiement
 # Fonction pour charger les données depuis data.txt
 def load_data():
     try:
-        # Lecture du fichier et conversion du prix en float (on retire le symbole $)
+        # Lecture du fichier et conversion du prix en float après suppression du symbole '$'
         df = pd.read_csv("data.txt", names=["timestamp", "price"])
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         df['price'] = df['price'].str.replace('$','', regex=False).astype(float)
@@ -44,7 +44,7 @@ app.layout = html.Div(style={
     dcc.Interval(id="interval-component", interval=300000, n_intervals=0)  # actualisation toutes les 5 minutes
 ])
 
-# Callback pour mettre à jour le contenu selon l'onglet et l'intervalle
+# Callback pour mettre à jour le contenu selon l'onglet sélectionné et l'intervalle
 @app.callback(
     Output("tabs-content", "children"),
     [Input("tabs", "value"), Input("interval-component", "n_intervals")]
@@ -54,8 +54,8 @@ def render_content(tab, n):
         return html.Div([
             html.H1("Présentation du Projet"),
             html.P("Ce projet a pour objectif de scraper en continu le prix de l'action Apple (AAPL) depuis Google Finance, "
-                   "générer un rapport quotidien détaillé, et permettre un suivi en temps réel via ce dashboard."),
-            html.P("L'onglet 'Dashboard' affiche le prix actuel, un graphique d'évolution, ainsi que le rapport quotidien.")
+                   "de générer un rapport quotidien détaillé, et de permettre un suivi en temps réel via ce dashboard."),
+            html.P("L'onglet 'Dashboard' affiche le prix actualisé, un graphique d'évolution, ainsi que le rapport quotidien.")
         ], style={"padding": "20px"})
     
     elif tab == "tab-dashboard":
@@ -85,7 +85,7 @@ def render_content(tab, n):
         return html.Div([
             html.H1("Dashboard"),
             html.Div([
-                html.H3(f"Prix actuel : {current_price} $"),
+                html.H3(f"Prix actualisé : {current_price} $"),
                 html.P(f"Dernière mise à jour : {last_update_str}")
             ], style={"marginBottom": "20px", "fontSize": "18px"}),
             dcc.Graph(figure=graph),
@@ -102,4 +102,3 @@ def render_content(tab, n):
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8050)
-
