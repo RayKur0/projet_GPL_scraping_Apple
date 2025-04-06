@@ -2,7 +2,7 @@
 # Script pour scraper le cours de XRP depuis Cryptoast
 
 # URL de la page Cryptoast pour XRP
-URL="https://cryptoast.fr/cours-xrp-52.html"
+URL="https://courscryptomonnaies.com/ripple"
 
 # Récupérer le contenu HTML de la page
 HTML=$(curl -s "$URL")
