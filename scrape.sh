@@ -1,21 +1,24 @@
 #!/bin/bash
-# Script pour scraper le cours de XRP depuis eToro
+# Script pour scraper le cours de XRP depuis crypto.com (version française)
 
-# URL de la page eToro pour XRP
-URL="https://www.etoro.com/fr/markets/xrp"
+# URL de la page crypto.com pour XRP (version FR)
+URL="https://crypto.com/price/fr/xrp"
 
 # Récupérer le contenu HTML de la page
 HTML=$(curl -s "$URL")
 
-# Tenter d'extraire le prix pour les trois cas possibles
-# On recherche l'attribut automation-id et la classe instrument-price et-font-3xl, avec éventuellement " negative" ou " positive"
-PRICE=$(echo "$HTML" | grep -oP 'automation-id="market-page-mobile-header-stats-value"\s+class="instrument-price et-font-3xl(?: negative| positive)?">\s*\K[0-9.]+(?=\s*</span>)' | head -1)
+# Extraire le texte à l'intérieur du span avec la classe "chakra-text css-13hqrwd"
+# Exemple d'HTML : <span class="chakra-text css-13hqrwd">$1,96 USD</span>
+RAW_PRICE=$(echo "$HTML" | grep -oP 'class="chakra-text css-13hqrwd">\s*\$\K[0-9,]+' | head -1)
 
-# Vérifier que le prix a bien été extrait
-if [ -z "$PRICE" ]; then
+# Vérifier que le prix a été extrait
+if [ -z "$RAW_PRICE" ]; then
     echo "Erreur : Impossible d'extraire le prix. Vérifiez la regex et la structure HTML."
     exit 1
 fi
+
+# Convertir la virgule en point (exemple : 1,96 -> 1.96)
+PRICE=$(echo "$RAW_PRICE" | sed 's/,/./')
 
 # Obtenir le timestamp courant
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
