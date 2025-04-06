@@ -1,15 +1,1 @@
-Daily Report - 20h
-📅 Date: 2025-04-06
-
-🟢 Open Price: $188.38 $
-
-🔴 Close Price: $188.38 $
-
-📈 Change:  $ (%)
-
-📊 Volatility: 0.000
-
-📉 Average Price: 0.000 $
-
-💹 Daily Return: %
 
