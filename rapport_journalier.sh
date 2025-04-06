@@ -13,7 +13,7 @@ if [ ! -s today_data.txt ]; then
     exit 1
 fi
 
-# Récupérer le prix d'ouverture (première valeur) et de clôture (dernière valeur)
+# Récupérer le prix d'ouverture (première valeur) et le prix de clôture (dernière valeur)
 OPEN=$(head -1 today_data.txt | cut -d',' -f2)
 CLOSE=$(tail -1 today_data.txt | cut -d',' -f2)
 
@@ -28,12 +28,13 @@ PRIX_MIN=$(awk -F, '{gsub(/\$/,"",$2); if(min=="" || $2+0<min) min=$2+0} END {pr
 # Calculer la variation journalière en pourcentage : ((max - min)/min)*100
 VARIATION=$(echo "scale=2; (($PRIX_MAX - $PRIX_MIN) / $PRIX_MIN) * 100" | bc -l)
 
-# Calculer la moyenne et la volatilité (écart-type) avec awk
+# Calculer la moyenne et la volatilité (écart-type) à l'aide de awk
 read AVG STD < <(awk -F, '{gsub(/\$/,"",$2); sum+=$2; sumsq+=$2*$2; count++} END {if(count>0){avg=sum/count; variance=(sumsq - (sum*sum)/count)/count; if(variance<0) variance=0; std=sqrt(variance); printf "%.3f %.3f", avg, std}}' today_data.txt)
 
 # Calculer le rendement journalier en pourcentage : ((close - open)/open)*100
 DAILY_RETURN=$(echo "scale=2; (($CLOSE_NUM - $OPEN_NUM) / $OPEN_NUM) * 100" | bc -l)
 
+# Formatage du rapport journalier en français
 REPORT="Daily Report - 20h
 📅 Date: $TODAY
 
@@ -42,8 +43,8 @@ REPORT="Daily Report - 20h
 
 📈 Variation journalière : $VARIATION %
 
-📊 Volatility: $STD
-📉 Average Price: \$$AVG
+📊 Volatilité: $STD
+📉 Prix moyen: \$$AVG
 💹 Daily Return: $DAILY_RETURN %
 "
 
