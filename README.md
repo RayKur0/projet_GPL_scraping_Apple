@@ -1,4 +1,4 @@
-# projet_GPL_scraping_Apple
+# projet_GPL_scraping_XRP
 
 Ce projet a pour objectif de scraper en continu le prix de la crypto XRP depuis Cryptoast et de générer un rapport quotidien détaillé. Le dashboard permet de suivre en temps réel le cours de XRP, d'afficher la dernière mise à jour, un graphique d'évolution et les rapports journaliers.
 
