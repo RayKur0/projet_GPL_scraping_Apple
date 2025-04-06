@@ -13,20 +13,15 @@ if [ ! -s today_data.txt ]; then
     exit 1
 fi
 
-# Récupérer le prix d'ouverture (première valeur) et de clôture (dernière valeur)
+# Récupérer le prix d'ouverture (première valeur) et le prix de clôture (dernière valeur)
 OPEN=$(head -1 today_data.txt | cut -d',' -f2)
 CLOSE=$(tail -1 today_data.txt | cut -d',' -f2)
-
-# Récupérer l'heure d'ouverture et de fermeture à partir des timestamps
-# On suppose que la colonne timestamp est au format "YYYY-MM-DD HH:MM:SS"
-MARKET_OPEN_TIME=$(head -1 today_data.txt | cut -d',' -f1 | awk '{print $2}')
-MARKET_CLOSE_TIME=$(tail -1 today_data.txt | cut -d',' -f1 | awk '{print $2}')
 
 # Calculer le changement en valeur et en pourcentage
 CHANGE=$(echo "$CLOSE - $OPEN" | bc -l)
 PERCENT_CHANGE=$(echo "scale=2; ($CHANGE / $OPEN) * 100" | bc -l)
 
-# Calculer la moyenne et la volatilité (écart-type) en utilisant awk
+# Calculer la moyenne et la volatilité (écart-type) avec awk
 read AVG STD < <(awk -F, '{
     sum+=$2; sumsq+=$2*$2; count++
 } END {
@@ -42,23 +37,19 @@ read AVG STD < <(awk -F, '{
 # Le rendement journalier est le pourcentage de changement
 DAILY_RETURN=$PERCENT_CHANGE
 
-# Formatage du rapport avec de nouveaux emojis et l'ajout des horaires d'ouverture et fermeture
+# Formatage du rapport avec des emojis et une présentation claire
 REPORT="Daily Report - 20h
 📅 Date: $TODAY
 
-⏰ Ouverture du marché: $MARKET_OPEN_TIME
-⏰ Fermeture du marché: $MARKET_CLOSE_TIME
+🟢 Open Price: $OPEN $
+🔴 Close Price: $CLOSE $
 
-🟩 Prix d'ouverture: $OPEN \$
-🟥 Prix de clôture: $CLOSE \$
-
-🔺 Variation: $CHANGE \$ ($PERCENT_CHANGE%)
-⚖️ Volatilité: $STD
-💵 Prix moyen: $AVG \$
-📈 Rendement journalier: $DAILY_RETURN%
+📈 Change: $CHANGE $ ($PERCENT_CHANGE%)
+📊 Volatility: $STD
+📉 Average Price: $AVG $
+💹 Daily Return: $DAILY_RETURN%
 "
 
 # Enregistrer le rapport dans daily_report.txt et l'afficher
 echo "$REPORT" > daily_report.txt
 echo "$REPORT"
-
