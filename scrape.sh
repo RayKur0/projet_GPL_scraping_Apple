@@ -1,19 +1,21 @@
 #!/bin/bash
-# URL de Google Finance pour Apple (AAPL)
-URL="https://www.google.com/finance/quote/AAPL:NASDAQ"
+# Script pour scraper le cours de XRP depuis Cryptoast
 
-# Récupérer le contenu HTML de la page (sans user-agent personnalisé)
+# URL de la page Cryptoast pour XRP
+URL="https://cryptoast.fr/cours-xrp-52.html"
+
+# Récupérer le contenu HTML de la page
 HTML=$(curl -s "$URL")
 
-# Extraire le prix en cherchant le texte après la classe "YMlKec fxKbKc"
-PRICE=$(echo "$HTML" | grep -o 'class="YMlKec fxKbKc">[^<]*' | head -1 | sed 's/.*">//')
+# Extraire le prix en cherchant le texte après la classe "cours-price"
+# Ajustez la regex si nécessaire en fonction de la structure réelle
+PRICE=$(echo "$HTML" | grep -oP 'class="cours-price">\K[0-9.,]+' | head -1)
 
 # Obtenir le timestamp courant
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
-# Sauvegarder les données dans data.txt au format CSV
-echo "$TIMESTAMP,$PRICE" >> data.txt
+# Enregistrer la donnée dans data.txt (format CSV : timestamp,price)
+echo "$TIMESTAMP,\$$PRICE" >> data.txt
 
 # Afficher le résultat
-echo "[$TIMESTAMP] Prix AAPL: $PRICE"
-
+echo "[$TIMESTAMP] Prix XRP: \$$PRICE"
