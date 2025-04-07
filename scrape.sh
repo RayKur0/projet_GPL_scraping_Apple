@@ -8,7 +8,6 @@ URL="https://crypto.com/price/fr/xrp"
 HTML=$(curl -s "$URL")
 
 # Extraction du prix en ciblant le span avec la classe "chakra-text css-13hqrwd"
-# La regex accepte un séparateur décimal soit une virgule soit un point.
 RAW_PRICE=$(echo "$HTML" | grep -oP 'class="chakra-text css-13hqrwd">\s*\$\K[0-9]+(?:[,.][0-9]+)?' | head -1)
 
 # Vérifier que le prix a été extrait
